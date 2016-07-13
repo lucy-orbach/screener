@@ -5,8 +5,8 @@
   "scripts": {
     "lint": "eslint src",
     "lint:watch": "npm run lint -- --watch",
-    "build": "browserify ./index.js -t babelify -o bundle.js",
-    "start": "watchify ./index.js -v -t babelify -o bundle.js && lint:watch"
+    "build": "browserify ./src/index.js -t babelify -o ./dist/bundle.js",
+    "start": "watchify ./src/index.js -v -t babelify -o ./dist/bundle.js && lint:watch"
   },
   "author": "Lucy Orbach",
   "license": "MIT",

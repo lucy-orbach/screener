@@ -1,25 +1,22 @@
 import React from 'react';
-import mockApi from '../api/mockApi.js';
+import QuestContainer from './quest/QuestContainer.js';
+import ResultsContainer from './results/ResultsContainer.js';
+
 
 export default class App extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state;
-	}
-	componentDidMount() {
-		let data = mockApi.getData();
-		this.setState({ data:  data });
-	}
 	render() {
+		let { questions, scores, doctors } = this.props.data;
 		return (
 			<div>
-			<h1>Hello World!</h1>
-			{ this.state
-				? <h1>{this.state.data.questions[0]}</h1>
-				: <h1>no data</h1>
-			}
+				<h1>Hello Again!</h1>
+				<QuestContainer questions={questions} />
+				<ResultsContainer scores={scores} doctors={doctors} />
 			</div>
 		);
 	}
 }
+
+App.PropTypes = {
+	data: React.PropTypes.object.isRequierd
+};
 
