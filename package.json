@@ -3,15 +3,18 @@
   "version": "1.0.0",
   "description": "Responsive Application using React/Redux",
   "scripts": {
-    "lint": "eslint src",
+    "start-server": "lite-server",
+    "lint": "eslint ./src/*.js",
     "lint:watch": "npm run lint -- --watch",
     "build": "browserify ./src/index.js -t babelify -o ./dist/bundle.js",
-    "start": "watchify ./src/index.js -v -t babelify -o ./dist/bundle.js && lint:watch"
+    "build:watch": "watchify ./src/index.js -v -t babelify -o ./dist/bundle.js",
+    "start": "npm-run-all -l -p start-server lint build:watch"
   },
   "author": "Lucy Orbach",
   "license": "MIT",
   "dependencies": {
     "babel-polyfill": "6.8.0",
+    "lodash": "^4.13.1",
     "react": "15.0.2",
     "react-dom": "15.0.2",
     "react-motion": "^0.4.4"
@@ -30,6 +33,9 @@
     "eslint-plugin-import": "1.6.1",
     "eslint-plugin-react": "5.0.1",
     "eslint-watch": "2.1.11",
+    "lite-server": "^2.2.2",
+    "node-sass": "^3.8.0",
+    "npm-run-all": "^2.3.0",
     "watchify": "^3.7.0"
   }
 }
