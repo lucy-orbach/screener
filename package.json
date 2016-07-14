@@ -4,11 +4,9 @@
   "description": "Responsive Application using React/Redux",
   "scripts": {
     "start-server": "lite-server",
-    "lint": "eslint ./src/*.js",
-    "lint:watch": "npm run lint -- --watch",
     "build": "browserify ./src/index.js -t babelify -o ./dist/bundle.js",
     "build:watch": "watchify ./src/index.js -v -t babelify -o ./dist/bundle.js",
-    "start": "npm-run-all -l -p start-server lint build:watch"
+    "start": "npm-run-all -l -p start-server build:watch"
   },
   "author": "Lucy Orbach",
   "license": "MIT",

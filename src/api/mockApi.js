@@ -11,7 +11,8 @@ const data = {
     'Or the opposite - being so fidgety or restless that you have been moving around a lot more than usual?',
     'Thoughts that you would be better off dead, or of hurting yourself in some way?'
   ],
-  scores: [
+  selections: [ 'Not at all', 'Several days', 'More than half the days in the week', 'Nearly every day'],
+  levels: [
     {
       level: 'None',
       min: 0,

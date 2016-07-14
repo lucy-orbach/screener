@@ -10,7 +10,7 @@ export default class App extends React.Component {
 		super(props);
 		this.state = {
 			currentSection: 'quiz',
-			level: null,
+			level: 'nonlvl',
 			selectedDr: null
 		};
 		this.handleCurrentSection = this.handleCurrentSection.bind(this);
@@ -20,28 +20,36 @@ export default class App extends React.Component {
 		this.setState({ currentSection: section });
 	}
 	setDepressionLevel(points) {
-		let { scores } = this.props.data;
-		let level = _.filter(scores, score => { 
-			return _.inRange(points, score.min, score.max + 1);
-		})[0].level;
-		this.setState({level});
+		let { levels } = this.props.data;
+		let level = _.filter(levels, lvl => { 
+			return _.inRange(points, lvl.min, lvl.max + 1);
+		})[0];
+		console.log(level);
+		this.setState({
+			currentSection: 'results',
+			level: level.level
+		});
 	}
 	render() {
-		let { questions, scores, doctors } = this.props.data;
-		let { currentSection } = this.state;
+		let { questions, selections, levels, doctors } = this.props.data;
+		let { currentSection, level } = this.state;
 		return (
 			<div>
 				<h1>Depression Screen</h1>
 				{ currentSection === 'intro'
 					?	<Introduction onClick={this.handleCurrentSection} />
 					: <section>
-							<QuestContainer questions={questions} />
-							{ currentSection === 'results'
-								? <ResultsContainer scores={scores} doctors={doctors} />
+							<QuestContainer
+								questions={questions}
+								selections={selections}
+								onSubmitForm={this.setDepressionLevel}/>
+							{/* currentSection === 'results'
+								? <ResultsContainer level={level} doctors={doctors} />
 								: null
-							}
+							*/}
 						</section>
 				}
+				<h1>{level}</h1>
 			</div>
 		);
 	}

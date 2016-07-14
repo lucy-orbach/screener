@@ -42685,7 +42685,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var data = {
   questions: ['Little interest or pleasure in doing things?', 'Feeling down, depressed, or hopeless?', 'Trouble falling or staying asleep, or sleeping too much?', 'Feeling tired or having little energy?', 'Poor appetite or overeating?', 'Feeling bad about yourself - or that you are a failure or have let yourself or your family down?', 'Trouble concentrating on things, such as reading the newspaper or watching television?', 'Moving or speaking so slowly that other people could have noticed?', 'Or the opposite - being so fidgety or restless that you have been moving around a lot more than usual?', 'Thoughts that you would be better off dead, or of hurting yourself in some way?'],
-  scores: [{
+  selections: ['Not at all', 'Several days', 'More than half the days in the week', 'Nearly every day'],
+  levels: [{
     level: 'None',
     min: 0,
     max: 4
@@ -42798,7 +42799,7 @@ var App = function (_React$Component) {
 
 		_this.state = {
 			currentSection: 'quiz',
-			level: null,
+			level: 'nonlvl',
 			selectedDr: null
 		};
 		_this.handleCurrentSection = _this.handleCurrentSection.bind(_this);
@@ -42814,21 +42815,28 @@ var App = function (_React$Component) {
 	}, {
 		key: 'setDepressionLevel',
 		value: function setDepressionLevel(points) {
-			var scores = this.props.data.scores;
+			var levels = this.props.data.levels;
 
-			var level = _lodash2.default.filter(scores, function (score) {
-				return _lodash2.default.inRange(points, score.min, score.max + 1);
-			})[0].level;
-			this.setState({ level: level });
+			var level = _lodash2.default.filter(levels, function (lvl) {
+				return _lodash2.default.inRange(points, lvl.min, lvl.max + 1);
+			})[0];
+			console.log(level);
+			this.setState({
+				currentSection: 'results',
+				level: level.level
+			});
 		}
 	}, {
 		key: 'render',
 		value: function render() {
 			var _props$data = this.props.data;
 			var questions = _props$data.questions;
-			var scores = _props$data.scores;
+			var selections = _props$data.selections;
+			var levels = _props$data.levels;
 			var doctors = _props$data.doctors;
-			var currentSection = this.state.currentSection;
+			var _state = this.state;
+			var currentSection = _state.currentSection;
+			var level = _state.level;
 
 			return _react2.default.createElement(
 				'div',
@@ -42841,8 +42849,15 @@ var App = function (_React$Component) {
 				currentSection === 'intro' ? _react2.default.createElement(_Introduction2.default, { onClick: this.handleCurrentSection }) : _react2.default.createElement(
 					'section',
 					null,
-					_react2.default.createElement(_QuestContainer2.default, { questions: questions }),
-					currentSection === 'results' ? _react2.default.createElement(_ResultsContainer2.default, { scores: scores, doctors: doctors }) : null
+					_react2.default.createElement(_QuestContainer2.default, {
+						questions: questions,
+						selections: selections,
+						onSubmitForm: this.setDepressionLevel })
+				),
+				_react2.default.createElement(
+					'h1',
+					null,
+					level
 				)
 			);
 		}
@@ -42858,7 +42873,7 @@ App.PropTypes = {
 	data: _react2.default.PropTypes.object.isRequierd
 };
 
-},{"./intro/Introduction.js":468,"./quest/QuestContainer.js":469,"./results/ResultsContainer.js":470,"lodash":299,"react":465}],468:[function(require,module,exports){
+},{"./intro/Introduction.js":468,"./quest/QuestContainer.js":469,"./results/ResultsContainer.js":473,"lodash":299,"react":465}],468:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -42933,6 +42948,14 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _QuizForm = require('./QuizForm.js');
+
+var _QuizForm2 = _interopRequireDefault(_QuizForm);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -42951,41 +42974,95 @@ var QuestContainer = function (_React$Component) {
 
 		_this.state;
 		_this.state = {
-			qa: {
-				q1: { key: 0, score: 4 }
-			} }; // keep track of answered questions
+			qa: {}, //tracks answered questions with score
+			unanswered: [], //keeps index of unanswered Qs
+			score: null
+		};
 		_this.handleSelection = _this.handleSelection.bind(_this);
+		_this.handleSubmit = _this.handleSubmit.bind(_this);
+		_this.calculateScore = _this.calculateScore.bind(_this);
 		return _this;
 	}
 
 	_createClass(QuestContainer, [{
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+			var qa = this.state.qa;
+			// Creates state obj to keep track of answered questions and scores 	
+
+			var qaKeys = Object.keys(this.props.questions);
+			for (var key in qaKeys) {
+				qa[key] = null;
+			}
+			this.setState({ qa: qa });
+		}
+	}, {
 		key: 'handleSelection',
-		value: function handleSelection(questKey, optionKey) {
-			var newKey = 'q' + questKey;
-			var qAnswered = { newKey: { key: questKey, score: optionKey + 1 } };
-			// let qa = Object.assign(
-			// 	{},
-			// 	this.state.qa,
-			// 	`q${questKey + 1}`: { key: questKey, score: optionKey + 1 }
-			// );
-			console.log(qAnswered);
-			// this.setState({score: this.state.score += points});
+		value: function handleSelection(qKey, optionKey) {
+			console.log(qKey, optionKey);
+			// Prevents lodash mutation of state
+			var unanswered = Object.assign([], this.state.unanswered);
+			// Clones qa and adds/edits current question
+			var qAnswered = {};
+			qAnswered[qKey] = optionKey;
+			var newQa = Object.assign({}, this.state.qa, qAnswered);
+			// Removes answered question from unanswered list
+			if (unanswered.length > 0) {
+				_lodash2.default.pull(unanswered, qKey);
+			}
+			// Sets state...
+			this.setState({ qa: newQa, unanswered: unanswered });
+		}
+	}, {
+		key: 'handleSubmit',
+		value: function handleSubmit(e) {
+			e.preventDefault();
+			var _state = this.state;
+			var qa = _state.qa;
+			var unanswered = _state.unanswered;
+			// Verifies that all the questions have been answered..
+
+			_lodash2.default.forEach(this.state.qa, function (value, key) {
+				//convert key to integer
+				var num = parseInt(key);
+				//push to unanswered array...
+				if (value === null && unanswered.indexOf(num) === -1) {
+					unanswered.push(num);
+				}
+			});
+			this.setState({ unanswered: unanswered });
+			//if all questions are answered -> proceed...
+			if (unanswered.length === 0) {
+				this.calculateScore();
+			}
+		}
+	}, {
+		key: 'calculateScore',
+		value: function calculateScore() {
+			var qa = this.state.qa;
+
+			var score = 0;
+			for (var i in qa) {
+				score += qa[i];
+			};
+			this.props.onSubmitForm(score);
 		}
 	}, {
 		key: 'render',
 		value: function render() {
 			var _this2 = this;
 
+			var _state2 = this.state;
+			var qa = _state2.qa;
+			var unanswered = _state2.unanswered;
+
+			var renderErrors = unanswered.length > 0;
+			var missingQs = unanswered.map(function (num) {
+				return num + 1;
+			});
 			return _react2.default.createElement(
 				'section',
 				null,
-				_react2.default.createElement(
-					'button',
-					{ onClick: function onClick() {
-							return _this2.handleSelection(0, 2);
-						} },
-					'click me'
-				),
 				_react2.default.createElement(
 					'h2',
 					null,
@@ -42996,11 +43073,22 @@ var QuestContainer = function (_React$Component) {
 					null,
 					'Over the last 2 weeks, how often have you been bothered by any of the following problems?'
 				),
-				_react2.default.createElement(
-					'h1',
+				_react2.default.createElement(_QuizForm2.default, {
+					qa: qa,
+					questions: this.props.questions,
+					renderErrors: renderErrors,
+					selections: this.props.selections,
+					unanswered: unanswered,
+					onSelect: function onSelect(q, o) {
+						return _this2.handleSelection(q, o);
+					},
+					onSubmit: this.handleSubmit }),
+				renderErrors ? _react2.default.createElement(
+					'h2',
 					null,
-					this.props.questions[0]
-				)
+					'Please answer questions: ',
+					missingQs.join(', ')
+				) : null
 			);
 		}
 	}]);
@@ -43013,10 +43101,184 @@ exports.default = QuestContainer;
 
 QuestContainer.PropTypes = {
 	questions: _react2.default.PropTypes.array.isRequired,
+	selections: _react2.default.PropTypes.array.isRequired,
+	onSelect: _react2.default.PropTypes.func.isRequired,
+	onSubmit: _react2.default.PropTypes.func.isRequired
+};
+
+},{"./QuizForm.js":471,"lodash":299,"react":465}],470:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _RadioGroup = require('./RadioGroup.js');
+
+var _RadioGroup2 = _interopRequireDefault(_RadioGroup);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var QuestionField = function QuestionField(props) {
+	var answer = props.answer;
+	var markAsError = props.markAsError;
+	var qKey = props.qKey;
+	var question = props.question;
+	var selections = props.selections;
+
+	var options = selections.map(function (opt, key) {
+		return _react2.default.createElement(_RadioGroup2.default, {
+			key: key,
+			isChecked: answer === key,
+			label: opt,
+			qKey: qKey,
+			oKey: key,
+			onSelect: props.onSelect });
+	});
+	return _react2.default.createElement(
+		'div',
+		{ style: { margin: '20px' } },
+		_react2.default.createElement(
+			'label',
+			null,
+			_react2.default.createElement(
+				'span',
+				null,
+				qKey + 1
+			),
+			question
+		),
+		_react2.default.createElement(
+			'div',
+			null,
+			options
+		)
+	);
+};
+
+QuestionField.PropTypes = {
+	answer: _react2.default.PropTypes.any,
+	markAsError: _react2.default.PropTypes.bool,
+	qKey: _react2.default.PropTypes.number.isRequired,
+	question: _react2.default.PropTypes.object.isRequired,
+	selections: _react2.default.PropTypes.array.isRequired,
+	onSelect: _react2.default.PropTypes.func.isRequired
+};
+exports.default = QuestionField;
+
+},{"./RadioGroup.js":472,"react":465}],471:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _QuestionField = require('./QuestionField.js');
+
+var _QuestionField2 = _interopRequireDefault(_QuestionField);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var QuestionForm = function QuestionForm(props) {
+	var qa = props.qa;
+	var questions = props.questions;
+	var renderErrors = props.renderErrors;
+	var unanswered = props.unanswered;
+	var selections = props.selections;
+
+	var qList = questions.map(function (q, key) {
+		var markAsError = unanswered.indexOf(key) > -1 && renderErrors;
+		var answer = null;
+		if (qa[key]) {
+			answer = qa[key];
+		}
+		return _react2.default.createElement(_QuestionField2.default, {
+			key: key,
+			answer: answer,
+			markAsError: markAsError,
+			qKey: key,
+			question: q,
+			selections: selections,
+			onSelect: function onSelect(q, o) {
+				return props.onSelect(q, o);
+			} });
+	});
+	return _react2.default.createElement(
+		'form',
+		null,
+		_react2.default.createElement(
+			'div',
+			null,
+			qList
+		),
+		_react2.default.createElement('input', { type: 'submit', value: 'Submit', onClick: props.onSubmit })
+	);
+};
+
+QuestionForm.PropTypes = {
+	qa: _react2.default.PropTypes.object.isRequired,
+	questions: _react2.default.PropTypes.array.isRequired,
+	renderErrors: _react2.default.PropTypes.bool.isRequired,
+	selections: _react2.default.PropTypes.array.isRequired,
+	unanswered: _react2.default.PropTypes.array.isRequired,
+	onSelect: _react2.default.PropTypes.func.isRequired,
+	onSubmit: _react2.default.PropTypes.func.isRequired
+};
+
+exports.default = QuestionForm;
+
+},{"./QuestionField.js":470,"lodash":299,"react":465}],472:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _react = require("react");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var RadioGroup = function RadioGroup(props) {
+	var isChecked = props.isChecked;
+	var label = props.label;
+	var qKey = props.qKey;
+	var oKey = props.oKey;
+
+	return _react2.default.createElement(
+		"label",
+		null,
+		_react2.default.createElement("input", { type: "radio", checked: isChecked, onChange: function onChange() {
+				return props.onSelect(qKey, oKey);
+			} }),
+		label
+	);
+};
+
+RadioGroup.PropTypes = {
+	isChecked: _react2.default.PropTypes.bool.isRequired,
+	label: _react2.default.PropTypes.string.isRequired,
+	qKey: _react2.default.PropTypes.number.isRequired,
+	oKey: _react2.default.PropTypes.number.isRequired,
 	onSelect: _react2.default.PropTypes.func.isRequired
 };
 
-},{"react":465}],470:[function(require,module,exports){
+exports.default = RadioGroup;
+
+},{"react":465}],473:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43086,7 +43348,7 @@ Results.PropTypes = {
 	doctors: _react2.default.PropTypes.array.isRequired
 };
 
-},{"react":465}],471:[function(require,module,exports){
+},{"react":465}],474:[function(require,module,exports){
 'use strict';
 
 require('babel-polyfill');
@@ -43114,4 +43376,4 @@ var data = _mockApi2.default.getData();
 
 _reactDom2.default.render(_react2.default.createElement(_App2.default, { data: data }), document.getElementById('app'));
 
-},{"./api/mockApi.js":466,"./components/App.js":467,"babel-polyfill":1,"react":465,"react-dom":300}]},{},[471]);
+},{"./api/mockApi.js":466,"./components/App.js":467,"babel-polyfill":1,"react":465,"react-dom":300}]},{},[474]);
