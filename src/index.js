@@ -6,8 +6,17 @@ import mockApi from './api/mockApi.js';
 
 // mocks call to load data (action)
 let data = mockApi.getData();
+// mocks logged-in user
+let user = {
+	id: 0,
+	firstName: 'John',
+	lastName: 'Doe',
+	email: 'john@example.com',
+	phone: 1234567890,
+	city: 'New York, NY'
+};
 
 ReactDOM.render(
-	<App data = {data} />,
+	<App data={data} user={user} />,
 	document.getElementById('app')
 );

@@ -42708,30 +42708,53 @@ var data = {
     max: 27
   }],
   doctors: [{
+    id: 0,
     name: 'Dr. Michael Tanzer, MD',
     speciality: 'Psychiatrist',
     picUrl: 'https://d2t808ag5aqhkh.cloudfront.net/853f37da-0d94-48de-80df-bb1f510db5c0zoom.jpg',
-    address: '65 Broadway, Suite 739, New York, NY, 10006'
+    address: '65 Broadway, Suite 739, New York, NY, 10006',
+    city: 'New York, NY',
+    email: 'dr@example.com'
   }, {
+    id: 0,
     name: 'Dr. Edward Fruitman, MD',
     speciality: 'Psychiatrist',
     picUrl: 'https://dsw5h1xg5uvx.cloudfront.net/fba590f8-55f8-4fb2-ac99-bbf8051e0501zoom.jpg',
-    address: '115 Broadway, Suite 1300, New York, NY, 10006'
+    address: '115 Broadway, Suite 1300, New York, NY, 10006',
+    city: 'New York, NY',
+    email: 'dr@example.com'
   }, {
+    id: 2,
     name: 'Dr. Aaron Savedoff, MD',
     speciality: 'Psychiatrist',
     picUrl: 'https://dsw5h1xg5uvx.cloudfront.net/625d201e-5223-4e9f-88ea-9bdac664ec3ezoom.jpg',
-    address: '7 Dey Street, Suite 400 (4th Fl), New York, NY, 10007'
+    address: '7 Dey Street, Suite 400 (4th Fl), New York, NY, 10007',
+    city: 'New York, NY',
+    email: 'dr@example.com'
   }, {
-    name: 'Dr. Douglas Bailyn, MD',
-    speciality: 'Primary Care Doctor',
+    id: 3,
+    name: 'Dr. Notin Town, MD',
+    speciality: 'Psychiatrist',
     picUrl: 'https://d2t808ag5aqhkh.cloudfront.net/e90c0fd8-d2f3-4706-bc2f-78d212d9d59czoom.jpg',
-    address: '111 Broadway, New York, NY 10006'
+    address: '111 Broadway, New York, NY 10006',
+    city: 'Boston, MA',
+    email: 'dr@example.com'
   }, {
-    name: 'Dr. Claire Binsol, DO',
+    id: 4,
+    name: 'Dr. Nota Psych, DO',
     speciality: 'Primary Care Doctor',
     picUrl: 'https://d1cesmq0xhh7we.cloudfront.net/77a3297e-1fc5-47fd-b367-1ae3196661a4zoom.jpg',
-    address: '120 Broadway, New York, NY 10006'
+    address: '120 Broadway, New York, NY 10006',
+    city: 'New York, NY',
+    email: 'dr@example.com'
+  }, {
+    id: 5,
+    name: 'Dr. Good ButTooMany, MD',
+    speciality: 'Psychiatrist',
+    picUrl: 'https://dsw5h1xg5uvx.cloudfront.net/fba590f8-55f8-4fb2-ac99-bbf8051e0501zoom.jpg',
+    address: '115 Broadway, Suite 1300, New York, NY, 10006',
+    city: 'New York, NY',
+    email: 'dr@example.com'
   }]
 };
 
@@ -42769,7 +42792,7 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _Introduction = require('./intro/Introduction.js');
+var _Introduction = require('./common/Introduction.js');
 
 var _Introduction2 = _interopRequireDefault(_Introduction);
 
@@ -42798,12 +42821,14 @@ var App = function (_React$Component) {
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this, props));
 
 		_this.state = {
-			currentSection: 'quiz',
-			level: 'nonlvl',
-			selectedDr: null
+			currentSection: 'start', //'start', 'quiz', results', 'thanks'
+			filteredDrs: [], // array of objects
+			level: null //string
 		};
 		_this.handleCurrentSection = _this.handleCurrentSection.bind(_this);
+		_this.handleSubmitDr = _this.handleSubmitDr.bind(_this);
 		_this.setDepressionLevel = _this.setDepressionLevel.bind(_this);
+		_this.filterDoctors = _this.filterDoctors.bind(_this);
 		return _this;
 	}
 
@@ -42813,6 +42838,14 @@ var App = function (_React$Component) {
 			this.setState({ currentSection: section });
 		}
 	}, {
+		key: 'handleSubmitDr',
+		value: function handleSubmitDr(drId, msg) {
+			console.log('you got a message: ' + msg);
+			// Dispatches to server
+			// this.props.actions.sendMsg( this.props.user, drId, 'Sent', msg);
+			this.handleCurrentSection('thanks');
+		}
+	}, {
 		key: 'setDepressionLevel',
 		value: function setDepressionLevel(score) {
 			var levels = this.props.data.levels;
@@ -42820,21 +42853,33 @@ var App = function (_React$Component) {
 			var level = _lodash2.default.filter(levels, function (lvl) {
 				return _lodash2.default.inRange(score, lvl.min, lvl.max + 1);
 			})[0];
-			this.setState({
-				currentSection: 'results',
-				level: level.level
+			this.setState({ level: level.level });
+			this.filterDoctors();
+		}
+	}, {
+		key: 'filterDoctors',
+		value: function filterDoctors() {
+			var city = this.props.user;
+			var doctors = this.props.data.doctors;
+
+			var filteredDoctors = _lodash2.default.filter(doctors, function (dr) {
+				return dr.speciality === 'Psychiatrist' && dr.city === 'New York, NY';
 			});
+			this.setState({ filteredDrs: filteredDoctors.slice(0, 3) });
+			this.handleCurrentSection('results');
 		}
 	}, {
 		key: 'render',
 		value: function render() {
 			var _props$data = this.props.data;
+			var doctors = _props$data.doctors;
+			var levels = _props$data.levels;
 			var questions = _props$data.questions;
 			var selections = _props$data.selections;
-			var levels = _props$data.levels;
-			var doctors = _props$data.doctors;
+			var user = this.props.user;
 			var _state = this.state;
 			var currentSection = _state.currentSection;
+			var filteredDrs = _state.filteredDrs;
 			var level = _state.level;
 			// creates obj to track questions...
 
@@ -42851,19 +42896,23 @@ var App = function (_React$Component) {
 					null,
 					'Depression Screen'
 				),
-				currentSection === 'intro' ? _react2.default.createElement(_Introduction2.default, { onClick: this.handleCurrentSection }) : _react2.default.createElement(
+				_react2.default.createElement(
 					'section',
 					null,
-					_react2.default.createElement(_QuestContainer2.default, {
+					currentSection === 'start' && _react2.default.createElement(_Introduction2.default, {
+						user: user,
+						onClick: this.handleCurrentSection }),
+					currentSection === 'quiz' && _react2.default.createElement(_QuestContainer2.default, {
 						qa: qa,
 						questions: questions,
 						selections: selections,
-						onSubmitForm: this.setDepressionLevel })
-				),
-				_react2.default.createElement(
-					'h1',
-					null,
-					level
+						onSubmitForm: this.setDepressionLevel }),
+					currentSection === 'results' && _react2.default.createElement(_ResultsContainer2.default, {
+						city: user.city,
+						level: level,
+						doctors: filteredDrs,
+						onSubmit: this.handleSubmitDr }),
+					currentSection === 'thanks' && _react2.default.createElement('div', null)
 				)
 			);
 		}
@@ -42879,7 +42928,7 @@ App.PropTypes = {
 	data: _react2.default.PropTypes.object.isRequierd
 };
 
-},{"./intro/Introduction.js":468,"./quest/QuestContainer.js":469,"./results/ResultsContainer.js":473,"lodash":299,"react":465}],468:[function(require,module,exports){
+},{"./common/Introduction.js":468,"./quest/QuestContainer.js":469,"./results/ResultsContainer.js":475,"lodash":299,"react":465}],468:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -42899,7 +42948,14 @@ var Introduction = function Introduction(props) {
 		_react2.default.createElement(
 			'h2',
 			null,
-			'feeling overwhelming sadness?'
+			'Hi ',
+			props.user.firstName,
+			'!'
+		),
+		_react2.default.createElement(
+			'h2',
+			null,
+			'Are you feeling overwhelming sadness?'
 		),
 		_react2.default.createElement(
 			'p',
@@ -42936,6 +42992,7 @@ var Introduction = function Introduction(props) {
 };
 
 Introduction.PropTypes = {
+	user: _react2.default.PropTypes.object,
 	onClick: _react2.default.PropTypes.func.isRequired
 };
 
@@ -43272,6 +43329,131 @@ RadioGroup.PropTypes = {
 exports.default = RadioGroup;
 
 },{"react":465}],473:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _react = require("react");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ContactForm = function ContactForm(props) {
+	return _react2.default.createElement(
+		"form",
+		null,
+		_react2.default.createElement("textarea", {
+			rows: "5",
+			maxLength: "120",
+			placeholder: "Would you like to add a message to the Dr?",
+			onChange: props.onChange }),
+		_react2.default.createElement("input", { type: "submit", value: "Submit", onClick: props.onSubmit })
+	);
+};
+
+ContactForm.propTypes = {
+	onChange: _react2.default.PropTypes.func.isRequired,
+	onSubmit: _react2.default.PropTypes.func.isRequired
+};
+
+exports.default = ContactForm;
+
+},{"react":465}],474:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _ContactForm = require('./ContactForm.js');
+
+var _ContactForm2 = _interopRequireDefault(_ContactForm);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var DrBlurb = function DrBlurb(props) {
+	var isActive = props.isActive; // user wants to make contact
+
+	var _props$dr = props.dr;
+	var id = _props$dr.id;
+	var name = _props$dr.name;
+	var speciality = _props$dr.speciality;
+	var picUrl = _props$dr.picUrl;
+	var address = _props$dr.address;
+	var city = _props$dr.city;
+
+	return _react2.default.createElement(
+		'li',
+		null,
+		_react2.default.createElement(
+			'div',
+			{ 'class': 'drInfoContainer' },
+			_react2.default.createElement('div', { 'class': 'avatar' }),
+			_react2.default.createElement(
+				'ul',
+				{ 'class': 'drInfoList' },
+				_react2.default.createElement(
+					'li',
+					{ key: 0, 'class': 'drName' },
+					name
+				),
+				_react2.default.createElement(
+					'li',
+					{ key: 1, 'class': 'drSpeciality' },
+					speciality
+				),
+				_react2.default.createElement(
+					'li',
+					{ key: 2, 'class': 'drAddress' },
+					address
+				)
+			),
+			_react2.default.createElement(
+				'div',
+				{ 'class': 'drBtnCotainer' },
+				_react2.default.createElement(
+					'button',
+					{ key: 0, onClick: props.onClickCancel },
+					'Cancel'
+				),
+				_react2.default.createElement(
+					'button',
+					{ key: 1, value: id, onClick: function onClick(e) {
+							return props.onClickSelectDr(e);
+						} },
+					'Contact Dr'
+				)
+			),
+			_react2.default.createElement(
+				'div',
+				{ 'class': 'contactFormContainer' },
+				_react2.default.createElement(_ContactForm2.default, {
+					onChange: props.onChangeMsg,
+					onSubmit: props.onSubmitMsg })
+			)
+		)
+	);
+};
+
+DrBlurb.propTypes = {
+	dr: _react2.default.PropTypes.object.isRequired,
+	isActive: _react2.default.PropTypes.bool.isRequired,
+	onClickCancel: _react2.default.PropTypes.func.isRequired,
+	onClickSelectDr: _react2.default.PropTypes.func.isRequired,
+	onChangeMsg: _react2.default.PropTypes.func.isRequired,
+	onSubmitMsg: _react2.default.PropTypes.func.isRequired
+};
+
+exports.default = DrBlurb;
+
+},{"./ContactForm.js":473,"react":465}],475:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43284,6 +43466,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _DrBlurb = require('./DrBlurb.js');
+
+var _DrBlurb2 = _interopRequireDefault(_DrBlurb);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -43295,36 +43481,84 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Results = function (_React$Component) {
 	_inherits(Results, _React$Component);
 
-	function Results() {
+	function Results(props) {
 		_classCallCheck(this, Results);
 
-		return _possibleConstructorReturn(this, Object.getPrototypeOf(Results).apply(this, arguments));
+		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Results).call(this, props));
+
+		_this.state;
+		_this.state = {
+			selectedDr: null,
+			msg: ''
+		};
+		_this.handleToggleMsg = _this.handleToggleMsg.bind(_this);
+		_this.handleSelectDr = _this.handleSelectDr.bind(_this);
+		_this.handleChangeMsg = _this.handleChangeMsg.bind(_this);
+		_this.handleSubmitMsg = _this.handleSubmitMsg.bind(_this);
+		return _this;
 	}
 
 	_createClass(Results, [{
+		key: 'handleToggleMsg',
+		value: function handleToggleMsg() {
+			this.setState({ isActive: !this.state.isActive });
+		}
+	}, {
+		key: 'handleSelectDr',
+		value: function handleSelectDr(e) {
+			e.preventDefault();
+			var id = parseInt(e.target.value);
+			this.setState({ selectedDr: id });
+		}
+	}, {
+		key: 'handleChangeMsg',
+		value: function handleChangeMsg(e) {
+			this.setState({ msg: e.target.value });
+		}
+	}, {
+		key: 'handleSubmitMsg',
+		value: function handleSubmitMsg(e) {
+			e.preventDefault();
+			this.props.onSubmit(this.state.selectedDr, this.state.msg);
+		}
+	}, {
 		key: 'render',
 		value: function render() {
+			var _this2 = this;
+
 			var _props = this.props;
-			var scores = _props.scores;
+			var city = _props.city;
+			var level = _props.level;
 			var doctors = _props.doctors;
 
+			var drList = doctors.map(function (dr, key) {
+				var isActive = _this2.state.selectedDr === dr.id;
+				return _react2.default.createElement(_DrBlurb2.default, {
+					key: key,
+					dr: dr,
+					isActive: isActive,
+					onClickCancel: _this2.handleToggleMsg,
+					onClickSelectDr: _this2.handleSelectDr,
+					onChangeMsg: _this2.handleChangeMsg,
+					onSubmitMsg: _this2.handleSubmitMsg });
+			});
 			return _react2.default.createElement(
 				'section',
 				null,
 				_react2.default.createElement(
-					'h2',
+					'p',
 					null,
-					'Results go here....'
+					'Based on the answers you entered, we think you have a ' + level + ' depression. We recommend you to contact a Doctor.'
 				),
 				_react2.default.createElement(
-					'h1',
+					'p',
 					null,
-					scores[0].level
+					'These are some Psychiatrists in ' + city + ':'
 				),
 				_react2.default.createElement(
-					'h1',
+					'ul',
 					null,
-					doctors[0].name
+					drList
 				)
 			);
 		}
@@ -43337,11 +43571,14 @@ exports.default = Results;
 
 
 Results.PropTypes = {
-	scores: _react2.default.PropTypes.array.isRequired,
-	doctors: _react2.default.PropTypes.array.isRequired
+	city: _react2.default.PropTypes.string.isRequired,
+	level: _react2.default.PropTypes.string.isRequired,
+	doctors: _react2.default.PropTypes.object.isRequired,
+	selectedDr: _react2.default.PropTypes.number.isRequired,
+	onSubmit: _react2.default.PropTypes.func.isRequired
 };
 
-},{"react":465}],474:[function(require,module,exports){
+},{"./DrBlurb.js":474,"react":465}],476:[function(require,module,exports){
 'use strict';
 
 require('babel-polyfill');
@@ -43366,7 +43603,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // mocks call to load data (action)
 var data = _mockApi2.default.getData();
+// mocks logged-in user
+var user = {
+	id: 0,
+	firstName: 'John',
+	lastName: 'Doe',
+	email: 'john@example.com',
+	phone: 1234567890,
+	city: 'New York, NY'
+};
 
-_reactDom2.default.render(_react2.default.createElement(_App2.default, { data: data }), document.getElementById('app'));
+_reactDom2.default.render(_react2.default.createElement(_App2.default, { data: data, user: user }), document.getElementById('app'));
 
-},{"./api/mockApi.js":466,"./components/App.js":467,"babel-polyfill":1,"react":465,"react-dom":300}]},{},[474]);
+},{"./api/mockApi.js":466,"./components/App.js":467,"babel-polyfill":1,"react":465,"react-dom":300}]},{},[476]);
