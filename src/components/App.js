@@ -9,7 +9,7 @@ export default class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			currentSection: 'quiz',
+			currentSection: 'results',
 			level: 'nonlvl',
 			selectedDr: null
 		};
@@ -19,12 +19,11 @@ export default class App extends React.Component {
 	handleCurrentSection(section) {
 		this.setState({ currentSection: section });
 	}
-	setDepressionLevel(points) {
+	setDepressionLevel(score) {
 		let { levels } = this.props.data;
 		let level = _.filter(levels, lvl => { 
-			return _.inRange(points, lvl.min, lvl.max + 1);
+			return _.inRange(score, lvl.min, lvl.max + 1);
 		})[0];
-		console.log(level);
 		this.setState({
 			currentSection: 'results',
 			level: level.level
@@ -33,6 +32,12 @@ export default class App extends React.Component {
 	render() {
 		let { questions, selections, levels, doctors } = this.props.data;
 		let { currentSection, level } = this.state;
+		// creates obj to track questions...
+		let qa = {}; 
+		let qaKeys = Object.keys(questions);
+		for (let key in qaKeys) {
+			qa[key] = null;
+		}
 		return (
 			<div>
 				<h1>Depression Screen</h1>
@@ -40,13 +45,14 @@ export default class App extends React.Component {
 					?	<Introduction onClick={this.handleCurrentSection} />
 					: <section>
 							<QuestContainer
+								qa={qa}
 								questions={questions}
 								selections={selections}
 								onSubmitForm={this.setDepressionLevel}/>
-							{/* currentSection === 'results'
+							{ currentSection === 'results'
 								? <ResultsContainer level={level} doctors={doctors} />
 								: null
-							*/}
+							}
 						</section>
 				}
 				<h1>{level}</h1>

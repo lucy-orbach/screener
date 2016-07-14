@@ -7,32 +7,21 @@ export default class QuestContainer extends React.Component {
 		super(props);
 		this.state;
 		this.state = {
-			qa: {}, //tracks answered questions with score
-			unanswered: [], //keeps index of unanswered Qs
-			score: null
+			qa: this.props.qa, //tracks answered questions: question index: selection index(=score)
+			unanswered: [] //keeps index of unanswered Qs
 		};
 		this.handleSelection = this.handleSelection.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.calculateScore = this.calculateScore.bind(this);
 	}
-	componentDidMount() {
-		let { qa } = this.state;
-		// Creates state obj to keep track of answered questions and scores 	
-		let qaKeys = Object.keys(this.props.questions);
-		for (let key in qaKeys) {
-			qa[key] = null;
-		}
-		this.setState({ qa });
-	}
-	handleSelection(qKey, optionKey) {
-		console.log(qKey, optionKey);
-		// Prevents lodash mutation of state
-		let unanswered = Object.assign([], this.state.unanswered);
+	// Receives question and option Index (oKey = index = score)
+	handleSelection(qKey, oKey) { 
 		// Clones qa and adds/edits current question
 		let qAnswered = {};
-		qAnswered[qKey] = optionKey;
+		qAnswered[qKey] = oKey;
 		let newQa = Object.assign({}, this.state.qa, qAnswered);
 		// Removes answered question from unanswered list
+			let unanswered = Object.assign([], this.state.unanswered); // clones state
 		if (unanswered.length > 0) {
 			_.pull(unanswered, qKey);
 		}
@@ -41,7 +30,8 @@ export default class QuestContainer extends React.Component {
 	}
 	handleSubmit(e) {
 		e.preventDefault();
-		let  { qa, unanswered } = this.state;
+		let  { qa } = this.state; //for reference only
+		let unanswered = Object.assign([], this.state.unanswered); // clones state
 		// Verifies that all the questions have been answered..
 		_.forEach(this.state.qa, (value, key) => {
 			//convert key to integer
@@ -58,7 +48,7 @@ export default class QuestContainer extends React.Component {
 		}
 	}
 	calculateScore() {
-		let { qa } = this.state;
+		let { qa } = this.state; //for reference
 		let score = 0;
 		for (let i in qa) {
 			score += qa[i];
@@ -68,9 +58,10 @@ export default class QuestContainer extends React.Component {
 	render() {
 		let { qa, unanswered } = this.state;
 		let renderErrors = unanswered.length > 0;
+		// Creates array of qNumbers from indexes
 		let missingQs = unanswered.map( num => {
-					return num + 1;
-				});
+			return num + 1;
+		});
 		return (
 			<section>
 				<h2>Please answer all of the questions below...</h2>
@@ -81,7 +72,7 @@ export default class QuestContainer extends React.Component {
 					renderErrors={renderErrors}
 					selections={this.props.selections}
 					unanswered={unanswered}
-					onSelect={(q, o) => this.handleSelection(q, o)}
+					onSelect={(qKey, oKey) => this.handleSelection(qKey, oKey)}
 					onSubmit={this.handleSubmit} />
 					{ renderErrors
 						? <h2>Please answer questions: {missingQs.join(', ')}</h2>

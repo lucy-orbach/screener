@@ -42814,13 +42814,12 @@ var App = function (_React$Component) {
 		}
 	}, {
 		key: 'setDepressionLevel',
-		value: function setDepressionLevel(points) {
+		value: function setDepressionLevel(score) {
 			var levels = this.props.data.levels;
 
 			var level = _lodash2.default.filter(levels, function (lvl) {
-				return _lodash2.default.inRange(points, lvl.min, lvl.max + 1);
+				return _lodash2.default.inRange(score, lvl.min, lvl.max + 1);
 			})[0];
-			console.log(level);
 			this.setState({
 				currentSection: 'results',
 				level: level.level
@@ -42837,7 +42836,13 @@ var App = function (_React$Component) {
 			var _state = this.state;
 			var currentSection = _state.currentSection;
 			var level = _state.level;
+			// creates obj to track questions...
 
+			var qa = {};
+			var qaKeys = Object.keys(questions);
+			for (var key in qaKeys) {
+				qa[key] = null;
+			}
 			return _react2.default.createElement(
 				'div',
 				null,
@@ -42850,6 +42855,7 @@ var App = function (_React$Component) {
 					'section',
 					null,
 					_react2.default.createElement(_QuestContainer2.default, {
+						qa: qa,
 						questions: questions,
 						selections: selections,
 						onSubmitForm: this.setDepressionLevel })
@@ -42974,39 +42980,26 @@ var QuestContainer = function (_React$Component) {
 
 		_this.state;
 		_this.state = {
-			qa: {}, //tracks answered questions with score
-			unanswered: [], //keeps index of unanswered Qs
-			score: null
+			qa: _this.props.qa, //tracks answered questions: question index: selection index(=score)
+			unanswered: [] //keeps index of unanswered Qs
 		};
 		_this.handleSelection = _this.handleSelection.bind(_this);
 		_this.handleSubmit = _this.handleSubmit.bind(_this);
 		_this.calculateScore = _this.calculateScore.bind(_this);
 		return _this;
 	}
+	// Receives question and option Index (oKey = index = score)
+
 
 	_createClass(QuestContainer, [{
-		key: 'componentDidMount',
-		value: function componentDidMount() {
-			var qa = this.state.qa;
-			// Creates state obj to keep track of answered questions and scores 	
-
-			var qaKeys = Object.keys(this.props.questions);
-			for (var key in qaKeys) {
-				qa[key] = null;
-			}
-			this.setState({ qa: qa });
-		}
-	}, {
 		key: 'handleSelection',
-		value: function handleSelection(qKey, optionKey) {
-			console.log(qKey, optionKey);
-			// Prevents lodash mutation of state
-			var unanswered = Object.assign([], this.state.unanswered);
+		value: function handleSelection(qKey, oKey) {
 			// Clones qa and adds/edits current question
 			var qAnswered = {};
-			qAnswered[qKey] = optionKey;
+			qAnswered[qKey] = oKey;
 			var newQa = Object.assign({}, this.state.qa, qAnswered);
 			// Removes answered question from unanswered list
+			var unanswered = Object.assign([], this.state.unanswered); // clones state
 			if (unanswered.length > 0) {
 				_lodash2.default.pull(unanswered, qKey);
 			}
@@ -43017,11 +43010,10 @@ var QuestContainer = function (_React$Component) {
 		key: 'handleSubmit',
 		value: function handleSubmit(e) {
 			e.preventDefault();
-			var _state = this.state;
-			var qa = _state.qa;
-			var unanswered = _state.unanswered;
-			// Verifies that all the questions have been answered..
+			var qa = this.state.qa; //for reference only
 
+			var unanswered = Object.assign([], this.state.unanswered); // clones state
+			// Verifies that all the questions have been answered..
 			_lodash2.default.forEach(this.state.qa, function (value, key) {
 				//convert key to integer
 				var num = parseInt(key);
@@ -43039,7 +43031,7 @@ var QuestContainer = function (_React$Component) {
 	}, {
 		key: 'calculateScore',
 		value: function calculateScore() {
-			var qa = this.state.qa;
+			var qa = this.state.qa; //for reference
 
 			var score = 0;
 			for (var i in qa) {
@@ -43052,11 +43044,12 @@ var QuestContainer = function (_React$Component) {
 		value: function render() {
 			var _this2 = this;
 
-			var _state2 = this.state;
-			var qa = _state2.qa;
-			var unanswered = _state2.unanswered;
+			var _state = this.state;
+			var qa = _state.qa;
+			var unanswered = _state.unanswered;
 
 			var renderErrors = unanswered.length > 0;
+			// Creates array of qNumbers from indexes
 			var missingQs = unanswered.map(function (num) {
 				return num + 1;
 			});
@@ -43079,8 +43072,8 @@ var QuestContainer = function (_React$Component) {
 					renderErrors: renderErrors,
 					selections: this.props.selections,
 					unanswered: unanswered,
-					onSelect: function onSelect(q, o) {
-						return _this2.handleSelection(q, o);
+					onSelect: function onSelect(qKey, oKey) {
+						return _this2.handleSelection(qKey, oKey);
 					},
 					onSubmit: this.handleSubmit }),
 				renderErrors ? _react2.default.createElement(
@@ -43198,17 +43191,17 @@ var QuestionForm = function QuestionForm(props) {
 	var unanswered = props.unanswered;
 	var selections = props.selections;
 
-	var qList = questions.map(function (q, key) {
-		var markAsError = unanswered.indexOf(key) > -1 && renderErrors;
+	var qList = questions.map(function (q, qKey) {
+		var markAsError = unanswered.indexOf(qKey) !== -1 && renderErrors;
 		var answer = null;
-		if (qa[key]) {
-			answer = qa[key];
+		if (qa[qKey] !== null) {
+			answer = qa[qKey];
 		}
 		return _react2.default.createElement(_QuestionField2.default, {
-			key: key,
+			key: qKey,
 			answer: answer,
 			markAsError: markAsError,
-			qKey: key,
+			qKey: qKey,
 			question: q,
 			selections: selections,
 			onSelect: function onSelect(q, o) {
@@ -43228,11 +43221,11 @@ var QuestionForm = function QuestionForm(props) {
 };
 
 QuestionForm.PropTypes = {
-	qa: _react2.default.PropTypes.object.isRequired,
+	qa: _react2.default.PropTypes.object.isRequired, // qKey : oKey = score
 	questions: _react2.default.PropTypes.array.isRequired,
 	renderErrors: _react2.default.PropTypes.bool.isRequired,
 	selections: _react2.default.PropTypes.array.isRequired,
-	unanswered: _react2.default.PropTypes.array.isRequired,
+	unanswered: _react2.default.PropTypes.array.isRequired, //qKeys
 	onSelect: _react2.default.PropTypes.func.isRequired,
 	onSubmit: _react2.default.PropTypes.func.isRequired
 };

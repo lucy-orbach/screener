@@ -2,19 +2,18 @@ import React from 'react';
 import _ from 'lodash';
 import QuestionField from './QuestionField.js';
 
-
 const QuestionForm = (props) => {
 	let { qa, questions, renderErrors, unanswered, selections } = props;
-	let qList = questions.map((q, key) => {
-		let markAsError = unanswered.indexOf(key) > -1  && renderErrors;
+	let qList = questions.map((q, qKey) => {
+		let markAsError = unanswered.indexOf(qKey) !== -1  && renderErrors;
 		let answer = null;
-		if (qa[key]) { answer = qa[key]; }
+		if (qa[qKey] !== null) { answer = qa[qKey]; }
 		return (
 			<QuestionField 
-				key={key} 
+				key={qKey} 
 				answer={answer}
 				markAsError={markAsError}
-				qKey={key}
+				qKey={qKey}
 				question={q}
 				selections={selections}
 				onSelect={(q, o) => props.onSelect(q, o)} />
@@ -31,11 +30,11 @@ const QuestionForm = (props) => {
 };
 
 QuestionForm.PropTypes = {
-	qa: React.PropTypes.object.isRequired,
+	qa: React.PropTypes.object.isRequired, // qKey : oKey = score
 	questions: React.PropTypes.array.isRequired,
 	renderErrors: React.PropTypes.bool.isRequired,
 	selections: React.PropTypes.array.isRequired,
-	unanswered: React.PropTypes.array.isRequired,
+	unanswered: React.PropTypes.array.isRequired, //qKeys
 	onSelect: React.PropTypes.func.isRequired,
 	onSubmit: React.PropTypes.func.isRequired
 };
