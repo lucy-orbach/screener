@@ -44208,6 +44208,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
@@ -44245,14 +44249,16 @@ var App = function (_React$Component) {
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this, props));
 
 		_this.state = {
-			currentSection: 'quiz', //'start', 'quiz', results'
+			currentSection: 'start', //'start', 'quiz', results'
 			filteredDrs: [], // array of objects
 			level: null,
-			success: false, //string
+			success: true, //string
 			mobile: false
 		};
+		_this.componentDidMount = _this.componentDidMount.bind(_this);
 		_this.handleCurrentSection = _this.handleCurrentSection.bind(_this);
 		_this.handleSubmitDr = _this.handleSubmitDr.bind(_this);
+		_this.handleCloseModal = _this.handleCloseModal.bind(_this);
 		_this.getMedia = _this.getMedia.bind(_this);
 		_this.setDepressionLevel = _this.setDepressionLevel.bind(_this);
 		_this.filterDoctors = _this.filterDoctors.bind(_this);
@@ -44269,19 +44275,21 @@ var App = function (_React$Component) {
 		key: 'handleCurrentSection',
 		value: function handleCurrentSection(section) {
 			this.setState({ currentSection: section });
+			_reactDom2.default.findDOMNode(this.refs.pageTop).scrollTop = 0;
 		}
 	}, {
 		key: 'handleSubmitDr',
 		value: function handleSubmitDr(drId, msg) {
-			var _this2 = this;
-
-			console.log('you got a message: ' + msg);
 			// Dispatches to server
 			// this.props.actions.sendMsg( this.props.user, drId, 'Sent', msg);
 			//mocks receipt of success props
-			window.setTimeout(function () {
-				_this2.setState({ success: true });
-			}, 1000);
+			this.setState({ success: true });
+			_reactDom2.default.findDOMNode(this.refs.pageTop).scrollTop = 0;
+		}
+	}, {
+		key: 'handleCloseModal',
+		value: function handleCloseModal() {
+			this.setState({ success: false, currentSection: 'start' });
 		}
 	}, {
 		key: 'getMedia',
@@ -44336,7 +44344,7 @@ var App = function (_React$Component) {
 			}
 			return _react2.default.createElement(
 				'div',
-				{ className: 'container' },
+				{ ref: 'pageTop', className: 'container' },
 				_react2.default.createElement(
 					'h1',
 					{ className: 'appTitle' },
@@ -44358,7 +44366,7 @@ var App = function (_React$Component) {
 						level: level,
 						doctors: filteredDrs,
 						onSubmit: this.handleSubmitDr }),
-					this.state.success && _react2.default.createElement(_Success2.default, null)
+					this.state.success && _react2.default.createElement(_Success2.default, { onClickClose: this.handleCloseModal })
 				)
 			);
 		}
@@ -44374,7 +44382,7 @@ App.PropTypes = {
 	data: _react2.default.PropTypes.object.isRequierd
 };
 
-},{"./common/Introduction.js":482,"./common/Success.js":483,"./quest/QuestContainer.js":484,"./results/ResultsContainer.js":490,"lodash":299,"react":479}],482:[function(require,module,exports){
+},{"./common/Introduction.js":482,"./common/Success.js":483,"./quest/QuestContainer.js":484,"./results/ResultsContainer.js":490,"lodash":299,"react":479,"react-dom":300}],482:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -44455,28 +44463,47 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactMotion = require('react-motion');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Success = function Success(props) {
 	return _react2.default.createElement(
-		'div',
-		null,
-		_react2.default.createElement(
-			'h2',
-			null,
-			'Your message ws sent!'
-		),
-		_react2.default.createElement(
-			'p',
-			null,
-			'Thanks for Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce faucibus tempor sem, a tincidunt erat pellentesque.'
-		)
+		_reactMotion.Motion,
+		{
+			defaultStyle: { bool: 0 },
+			style: { bool: (0, _reactMotion.spring)(1, _reactMotion.presets.gentle) } },
+		function (_ref) {
+			var bool = _ref.bool;
+			return _react2.default.createElement(
+				'div',
+				{ className: 'screen', style: { opacity: '' + bool }, onClick: props.onClickClose },
+				_react2.default.createElement(
+					'div',
+					{ className: 'successMsg', style: { transform: 'scale(' + bool + ', ' + bool + ')' } },
+					_react2.default.createElement(
+						'h3',
+						{ className: 'successTitle' },
+						'Your message has been sent!'
+					),
+					_react2.default.createElement(
+						'p',
+						null,
+						'Thanks for Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce faucibus tempor sem, a tincidunt erat pellentesque.'
+					)
+				)
+			);
+		}
 	);
+};
+
+Success.propTypes = {
+	onClickClose: _react2.default.PropTypes.func.isRequired
 };
 
 exports.default = Success;
 
-},{"react":479}],484:[function(require,module,exports){
+},{"react":479,"react-motion":307}],484:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

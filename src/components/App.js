@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import _ from 'lodash';
 import Introduction from './common/Introduction.js';
 import Success from './common/Success.js';
@@ -10,14 +11,16 @@ export default class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			currentSection: 'quiz', //'start', 'quiz', results'
+			currentSection: 'start', //'start', 'quiz', results'
 			filteredDrs: [], // array of objects
 			level: null,
-			success: false, //string
+			success: true, //string
 			mobile: false
 		};
+		this.componentDidMount = this.componentDidMount.bind(this);
 		this.handleCurrentSection = this.handleCurrentSection.bind(this);
 		this.handleSubmitDr = this.handleSubmitDr.bind(this);
+		this.handleCloseModal = this.handleCloseModal.bind(this);
 		this.getMedia = this.getMedia.bind(this);
 		this.setDepressionLevel = this.setDepressionLevel.bind(this);
 		this.filterDoctors = this.filterDoctors.bind(this);
@@ -28,15 +31,17 @@ export default class App extends React.Component {
 	}
 	handleCurrentSection(section) {
 		this.setState({ currentSection: section });
+		ReactDOM.findDOMNode(this.refs.pageTop).scrollTop = 0
 	}
 	handleSubmitDr(drId, msg) {
-		console.log(`you got a message: ${msg}`);
 		// Dispatches to server
 		// this.props.actions.sendMsg( this.props.user, drId, 'Sent', msg);
 		//mocks receipt of success props 
-		window.setTimeout(() => {
-			this.setState({success: true});
-		}, 1000);
+		this.setState({success: true});
+		ReactDOM.findDOMNode(this.refs.pageTop).scrollTop = 0
+	}
+	handleCloseModal() {
+		this.setState({success: false, currentSection: 'start'});
 	}
 	getMedia() {
 		let mobile = window.matchMedia(`(max-width: 767px)`).matches;
@@ -74,7 +79,7 @@ export default class App extends React.Component {
 			qa[key] = null;
 		}
 		return (
-			<div className="container">
+			<div ref="pageTop" className="container">
 				<h1 className="appTitle">Depression Screen</h1>
 				<main className="main">
 					{ currentSection === 'start' &&
@@ -97,7 +102,7 @@ export default class App extends React.Component {
 							onSubmit={this.handleSubmitDr} />
           }
           { this.state.success &&
-            <Success />
+            <Success onClickClose={this.handleCloseModal}/>
           }
 				</main>
 			</div>
