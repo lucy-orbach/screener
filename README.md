@@ -46,3 +46,5 @@ Responsive Web Application using React/Redux
 <p>A spring that solves your animation problems.</p>
 <h3>watchify</h3>
 <p>watch mode for browserify builds</p>
+
+NOTE: All the images used on this non-commercial repository were downloaded from Dribble and created by the great UI designer Andrew McKay
