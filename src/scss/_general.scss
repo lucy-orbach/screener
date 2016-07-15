@@ -1,0 +1,56 @@
+html {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+*, *:before, *:after {
+	box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0px;
+	font-size: inherit;
+}
+ul, ol {
+  list-style: none;
+  padding-left: 0px;
+  margin: 0px;
+}
+button,
+input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: 0;
+}
+input:focus,
+button:focus,
+a:focus,
+a:hover {
+  outline: none !important;
+}
+::-moz-focus-inner {
+    padding: 0;
+    border: 0;
+}
+textarea {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%;
+}
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  /*removes yellow background */
+  -webkit-box-shadow: 0 0 0px 1000px white inset;
+}
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill:focus {
+  /*removes yellow background */
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+}
+

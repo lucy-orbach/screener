@@ -1,0 +1,67 @@
+// COLOR SCHEME
+$teal: #0f8182;
+$cyan: #7ba7bb;
+$green: #85a762;
+$brown: #3c2902;
+$yellow: #edb90a;
+$beige: #fffdf7;
+
+@mixin shadow( $hv:2px, $vv:1px) {
+	-webkit-box-shadow: $hv $hv $hv $vv  rgba(0,0,0, 0.3);
+	-moz-box-shadow: $hv $hv $hv $vv rgba(0,0,0, 0.3);
+	box-shadow: $hv $hv $hv $vv rgba(0,0,0, 0.3);
+}
+/* animations */
+  /* fadeIn */
+    @-webkit-keyframes fadeIn { 
+      from { opacity:0; } to { opacity:1; } }
+    @-moz-keyframes fadeIn { 
+      from { opacity:0; } to { opacity:1; } }
+    @keyframes fadeIn { 
+      from { opacity:0; } to { opacity:1; } }
+
+    @mixin fadeIn() {
+      animation-name: fadeIn;
+      -webkit-animation-name: fadeIn;  
+
+      animation-duration: 0.25s; 
+      -webkit-animation-duration: 0.25s;
+
+      animation-timing-function: ease-out;  
+      -webkit-animation-timing-function: ease-out;  
+    }
+  /* pullDown*/
+  @keyframes pullDown {
+      0% { transform: scaleY(0.10); }
+     40% { transform: scaleY(1.02); }
+     60% { transform: scaleY(0.98); }
+     80% { transform: scaleY(1.00); }
+    100% { transform: scaleY(0.99); }       
+     80% { transform: scaleY(1.01); }
+    100% { transform: scaleY(1.00); }             
+  }
+
+  @-webkit-keyframes pullDown {
+      0% { -webkit-transform: scaleY(0.1); }
+     40% { -webkit-transform: scaleY(1.02); }
+     60% { -webkit-transform: scaleY(0.98); }
+     80% { -webkit-transform: scaleY(1.00); }
+    100% { -webkit-transform: scaleY(0.99); }       
+     80% { -webkit-transform: scaleY(1.01); }
+    100% { -webkit-transform: scaleY(1); }   
+  }
+
+  @mixin pullDown() {
+    animation-name: pullDown;
+    -webkit-animation-name: pullDown; 
+
+    animation-duration: 0.8s; 
+    -webkit-animation-duration: 0.8s;
+
+    animation-timing-function: ease-out;  
+    -webkit-animation-timing-function: ease-out;  
+
+    transform-origin: 50% 0%;
+    -ms-transform-origin: 50% 0%;
+    -webkit-transform-origin: 50% 0%;     
+  }

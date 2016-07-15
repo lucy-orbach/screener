@@ -36,7 +36,7 @@ const data = {
     {
       level: 'Severe',
       min: 20,
-      max: 27 
+      max: 30 
     },
   ],
   doctors: [
@@ -50,7 +50,7 @@ const data = {
       email: 'dr@example.com'
     },
     {
-      id: 0,
+      id: 1,
       name: 'Dr. Edward Fruitman, MD',
       speciality: 'Psychiatrist',
       picUrl: 'https://dsw5h1xg5uvx.cloudfront.net/fba590f8-55f8-4fb2-ac99-bbf8051e0501zoom.jpg',
@@ -87,7 +87,7 @@ const data = {
     },
     {
       id: 5,
-      name: 'Dr. Good ButTooMany, MD',
+      name: 'Dr. Good OnDesktop, MD',
       speciality: 'Psychiatrist',
       picUrl: 'https://dsw5h1xg5uvx.cloudfront.net/fba590f8-55f8-4fb2-ac99-bbf8051e0501zoom.jpg',
       address: '115 Broadway, Suite 1300, New York, NY, 10006',

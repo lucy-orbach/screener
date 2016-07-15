@@ -3,7 +3,7 @@ import _ from 'lodash';
 import QuestionField from './QuestionField.js';
 
 const QuestionForm = (props) => {
-	let { qa, questions, renderErrors, unanswered, selections } = props;
+	let { missingQs, qa, questions, renderErrors, unanswered, selections } = props;
 	let qList = questions.map((q, qKey) => {
 		let markAsError = unanswered.indexOf(qKey) !== -1  && renderErrors;
 		let answer = null;
@@ -20,16 +20,23 @@ const QuestionForm = (props) => {
 		);
 	});
 	return (
-		<form>
-			<div>
+		<form className="quizForm">
+			<ul className="quizList">
 			{ qList }
+			</ul>
+			<div className="errorContainer">
+				{ renderErrors
+					? <label className="missingLbl">Please answer questions: {missingQs.join(', ')}</label>
+					: null
+				}
 			</div>
-			<input type="submit" value="Submit" onClick={props.onSubmit} />
+			<input type="submit" className="submitQuiz" value="Submit" onClick={props.onSubmit} />
 		</form>
 	);
 };
 
 QuestionForm.PropTypes = {
+	missingQs: React.PropTypes.array.isRequired,
 	qa: React.PropTypes.object.isRequired, // qKey : oKey = score
 	questions: React.PropTypes.array.isRequired,
 	renderErrors: React.PropTypes.bool.isRequired,

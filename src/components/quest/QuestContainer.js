@@ -67,6 +67,7 @@ export default class QuestContainer extends React.Component {
 				<h2>Please answer all of the questions below...</h2>
 				<p>Over the last 2 weeks, how often have you been bothered by any of the following problems?</p>
 				<QuizForm
+					missingQs={missingQs}
 					qa={qa}
 					questions={this.props.questions}
 					renderErrors={renderErrors}
@@ -74,10 +75,6 @@ export default class QuestContainer extends React.Component {
 					unanswered={unanswered}
 					onSelect={(qKey, oKey) => this.handleSelection(qKey, oKey)}
 					onSubmit={this.handleSubmit} />
-					{ renderErrors
-						? <h2>Please answer questions: {missingQs.join(', ')}</h2>
-						: null
-					}
 			</section>
 		);
 	}

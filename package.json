@@ -4,9 +4,12 @@
   "description": "Responsive Application using React/Redux",
   "scripts": {
     "start-server": "lite-server",
+    "lint": "eslint src/js",
     "build": "browserify ./src/index.js -t babelify -o ./dist/bundle.js",
     "build:watch": "watchify ./src/index.js -v -t babelify -o ./dist/bundle.js",
-    "start": "npm-run-all -l -p start-server build:watch"
+    "scss": "node-sass --output-style compressed -o ./dist/css ./src/scss",
+    "scss:watch": "onchange './src/scss/*.scss' -- npm run scss",
+    "start": "npm-run-all -l -p start-server build:watch scss:watch"
   },
   "author": "Lucy Orbach",
   "license": "MIT",
@@ -34,6 +37,8 @@
     "lite-server": "^2.2.2",
     "node-sass": "^3.8.0",
     "npm-run-all": "^2.3.0",
+    "onchange": "^2.5.0",
+    "react-motion": "^0.4.4",
     "watchify": "^3.7.0"
   }
 }

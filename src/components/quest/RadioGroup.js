@@ -3,7 +3,7 @@ import React from 'react';
 const RadioGroup = (props) => {
 	let {isChecked, label, qKey, oKey } = props;
 	return (
-		<label>
+		<label className={isChecked ? 'radioLbl checked' : 'radioLbl'}>
 			<input type="radio" checked={isChecked} onChange={() => props.onSelect(qKey, oKey)}/>
 			{label}
 		</label>

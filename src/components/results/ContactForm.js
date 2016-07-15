@@ -2,9 +2,10 @@ import React from 'react';
 
 const ContactForm = (props) => {
 	return (
-		<form>
+		<form >
 			<textarea
 				rows="5"
+				className="msgArea"
 				maxLength="120"
 				placeholder="Would you like to add a message to the Dr?"
 				onChange={props.onChange} />
