@@ -1,0 +1,58 @@
+@media (min-width: 800px) {
+p {
+  line-height: 1.5rem;
+}
+h2 {
+  font-size: 1.2rem;
+}
+// APP
+	.app {
+		padding-top: 75px;
+	}
+	.main {
+		width: 75vw;
+		max-width: 980px;
+	}
+	.appTitle {
+		font-size: 48px;
+	}
+// INTRODUCTION
+// QUIZ
+	.quizItem {
+		margin: 20px 0px 40px;
+	}
+	.q-text {
+		width: 95%;
+	}
+// RESULTS
+	.resultsIntro {
+		width: 70%;
+		line-height: 30px;
+	}
+	.drList {
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
+	.drBlurb {
+		width: 47%;
+	}
+	.avatar {
+		width: 120px;
+		height: 120px;
+	}
+	.drBtnContainer {
+		justify-content: flex-end;
+		button{
+			margin-right: 0px;
+		}
+	}
+// SUCCESS
+	.successMsg {
+		width: 60vw;
+		padding: 40px;
+		p {
+			max-width: 400px;
+		}
+	}
+// media ends
+}

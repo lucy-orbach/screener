@@ -13,8 +13,8 @@ export default class App extends React.Component {
 		this.state = {
 			currentSection: 'start', //'start', 'quiz', results'
 			filteredDrs: [], // array of objects
-			level: null,
-			success: true, //string
+			level: 'mild',
+			success: false, //string
 			mobile: false
 		};
 		this.componentDidMount = this.componentDidMount.bind(this);
@@ -31,20 +31,23 @@ export default class App extends React.Component {
 	}
 	handleCurrentSection(section) {
 		this.setState({ currentSection: section });
-		ReactDOM.findDOMNode(this.refs.pageTop).scrollTop = 0
+		ReactDOM.findDOMNode(this.refs.pageTop).scrollTo = 0
 	}
 	handleSubmitDr(drId, msg) {
 		// Dispatches to server
 		// this.props.actions.sendMsg( this.props.user, drId, 'Sent', msg);
 		//mocks receipt of success props 
-		this.setState({success: true});
-		ReactDOM.findDOMNode(this.refs.pageTop).scrollTop = 0
+		ReactDOM.findDOMNode(this.refs.pageTop).scrollTo = 0;
+		this.setState({
+			currentSection: 'start',
+			success: true});
 	}
 	handleCloseModal() {
 		this.setState({success: false, currentSection: 'start'});
 	}
 	getMedia() {
-		let mobile = window.matchMedia(`(max-width: 767px)`).matches;
+		// mobile & ipad portrait
+		let mobile = window.matchMedia(`(max-width: 799px)`).matches;
 		this.setState({ mobile });
 	}
 	setDepressionLevel(score) {
@@ -96,15 +99,16 @@ export default class App extends React.Component {
           }
           { currentSection === 'results' &&
             <ResultsContainer
+            	mobile={this.state.mobile}
 							city={user.city}
 							level={level}
 							doctors={filteredDrs}
 							onSubmit={this.handleSubmitDr} />
           }
-          { this.state.success &&
+				</main>
+				{ this.state.success &&
             <Success onClickClose={this.handleCloseModal}/>
           }
-				</main>
 			</div>
 		);
 	}

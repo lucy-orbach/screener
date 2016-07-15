@@ -16,7 +16,7 @@ const QuestionField = (props) => {
 	});
 	return (
 		<li className="quizItem">
-			<label className="question"><span className={markAsError ? 'q-num has-error' : 'q-num'}>{qKey + 1}</span>{question}</label>
+			<label className="question"><span className={markAsError ? 'q-num has-error' : 'q-num'}>{qKey + 1}</span><span className="q-text">{question}</span></label>
 			<div className="optionList">
 			 {options}
 			</div>

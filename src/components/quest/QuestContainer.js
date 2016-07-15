@@ -63,7 +63,7 @@ export default class QuestContainer extends React.Component {
 			return num + 1;
 		});
 		return (
-			<section>
+			<section className="quizSection">
 				<h2>Please answer all of the questions below...</h2>
 				<p>Over the last 2 weeks, how often have you been bothered by any of the following problems?</p>
 				<QuizForm

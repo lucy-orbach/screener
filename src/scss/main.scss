@@ -12,13 +12,9 @@ body {
 h2, h3, h4, h5, h6 {
   color: $green;
 }
-h2 {
-  font-size: 1.2rem;
-}
 p {
 	width: 100%;
   text-align: center;
-  line-height: 1.5rem;
 }
 button:not(.btnLink),
 input[type="submit"] {
@@ -54,252 +50,256 @@ section {
 	background-position: center center;
 	background-repeat: no-repeat;
 }
-.app {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-	align-items: flex-start;
-	width: 100vw;
-	height: 100vh;
-}
-.container {
-	width: 75vw;
-	max-width: 980px;
-}
-.appTitle {
-	color: $yellow;
-	text-align: center;
-	font-size: 48px;
-}
+// APP
+	.app {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: flex-start;
+		width: 100vw;
+		height: 100vh;
+	}
+	.appTitle {
+		width: 100%;
+		color: $yellow;
+		text-align: center;
+		margin-bottom: 20px;
+	}
+	.container {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		width: 100%;
+	}
+	.main {
+		width: 100%;
+	}
 // INTRODUCTION
-.intro {
-	&:before {
-		background-image: url('../../src/images/logo.png');
+	.introSection {
+		&:before {
+			background-image: url('../../src/images/logo.png');
+		}
 	}
-}
-.stepList {
-	line-height: 2rem;
-}
-.step {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin-left: -50px;
-	&:before {
-		content: '';
-		display: block;
-		width: 40px;
-		height: 40px;
-		margin-right: 10px;
-		background-position: center center;
-		background-repeat: no-repeat;
+	.stepList {
+		line-height: 2rem;
 	}
-	&.quiz:before {
-		background-image: url(../../src/images/icon-quiz.png);
+	.step {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-left: -50px;
+		text-transform: capitalize;
+		&:before {
+			content: '';
+			display: block;
+			width: 40px;
+			height: 40px;
+			margin-right: 10px;
+			background-position: center center;
+			background-repeat: no-repeat;
+		}
+		&.quiz:before {
+			background-image: url(../../src/images/icon-quiz.png);
+		}
+		&.results:before {
+			background-image: url(../../src/images/icon-dr.png);
+		}
+		&.contact:before {
+			background-image: url(../../src/images/icon-chat.png);
+		}
 	}
-	&.results:before {
-		background-image: url(../../src/images/icon-dr.png);
-	}
-	&.contact:before {
-		background-image: url(../../src/images/icon-chat.png);
-	}
-
-}
 // QUIZ
-.quizForm {
-	text-align: center;
-}
-.quizList {
-	width: 100%;
-	text-align: left;
-}
-.quizItem {
-	@include pullDown();
-	margin: 20px 0px 40px;
-}
-.question {
-	line-height: 30px;
-}
-.q-num {
-	display: block;
-	width: 30px;
-	height: 30px;
-	float: left;
-	margin-right: 7px;
-	line-height: 30px;
-	border-radius: 50%;
-	background-color: $cyan;
-	color: #fff;
-	text-align: center;
-	transition: all 0.5s ease-in-out;
-	&.has-error {
-		background-color: $yellow;
-		transition: all 0.5s ease-in-out;
+	.quizForm {
+		text-align: center;
 	}
-}
-
-.optionList {
-	display: flex;
-	// flex-wrap: wrap;
-	justify-content: space-between;
-	margin: 20px 0px 0px 40px;
-}
-.radioLbl {
-	position: relative;
-	// width: 48%;
-	padding-left: 28px;
-	line-height: 25px;
-	&:before,
-	input[type="radio"] {
-		position: absolute;
-		top: 0px;
-		left: 0px;
-		width: 25px;
-		height: 25px;
+	.quizList {
+		width: 100%;
+		text-align: left;
 	}
-	&:before {
-		content: '';
-		display: block;
-		background:transparent url('../../src/images/radio.png') center center no-repeat;
-		background-size: initial;
-		transition: all 0.5s ease-in-out;
+	.quizItem {
+		@include pullDown();
 	}
-	&.checked:before {
-		background-image: url('../../src/images/radio-checked.png');
-		transition: all 0.5s ease-in-out;
+	.question {
+		display: flex;
+		flex-wrap: wrap;
+		line-height: 30px;
 	}
-	input[type="radio"] {
-		z-index: 10;
-		margin: 0px;
-		opacity: 0;
-		border: none;
+		.q-num {
+			display: block;
+			width: 30px;
+			height: 30px;
+			margin-right: 7px;
+			line-height: 30px;
+			border-radius: 50%;
+			background-color: $green;
+			color: #fff;
+			text-align: center;
+			transition: all 0.5s ease-in-out;
+			&.has-error {
+				background-color: $yellow;
+				transition: all 0.5s ease-in-out;
+			}
+		}
+		
+	.optionList {
+		display: flex;
+		justify-content: space-between;
+		margin: 20px 0px 0px 40px;
 	}
-}
-.errorContainer {
-	width: 75%;
-	height: 40px;
-	margin: 0px auto;
-	text-align: center;
-}
-.missingLbl {
-	@include pullDown();
-	display: block;
-	color: $green;
-	font-style: italic;
-	font-weight: bold;
-}
-.submitQuiz {
-}
-//results
-.resultsIntro {
-	width: 70%;
-	line-height: 30px;
-}
-.drList {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-between;
-	align-items: flex-start;
-}
-.drBlurb {
-	width: 46%;
-	padding: 20px;
-	margin-bottom: 40px;
-	border-radius: 24px;
-	border: 2px solid $yellow;
-	background-color: #fff;
-}
-.drInfoContainer {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: flex-start;
-}
-.avatar {
-	width: 120px;
-	height: 120px;
-	margin-right: 10px;
-	border-radius: 50%;
-	background-repeat: no-repeat;
-	background-position: center center;
-	background-size: cover;
-}
-.drInfoList {
-	width: 250px;
-}
-.drName {
-	color: $green;
-	font-size: 18px;
-	font-weight: bold;
-}
-.drAddress {
-	padding-left: 18px;
-	background: transparent url('../../src/images/location.png') left top no-repeat;
-	font-size: 14px;
-	font-style: italic;
-}
-.drBtnContainer {
-	display: flex;
-	justify-content: flex-end;
-	align-items: center;
-	width: 100%;
-}
-.btnLink {
-	border: none;
-	background-color: transparent;
-	font-style: italic;
-	font-size: 14px;
-	text-decoration: underline;
-	color: $green;
-	transition: color 0.5s ease-in-out;
-	&:hover {
-		color: $brown;
+		.radioLbl {
+			position: relative;
+			min-height: 40px;
+			padding-left: 28px;
+			line-height: 25px;
+			&:before,
+			input[type="radio"] {
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				width: 25px;
+				height: 25px;
+			}
+			&:before {
+				content: '';
+				display: block;
+				background:transparent url('../../src/images/radio.png') center center no-repeat;
+				background-size: initial;
+				transition: all 0.5s ease-in-out;
+			}
+			&.checked:before {
+				background-image: url('../../src/images/radio-checked.png');
+				transition: all 0.5s ease-in-out;
+			}
+			input[type="radio"] {
+				z-index: 10;
+				margin: 0px;
+				opacity: 0;
+				border: none;
+			}
+		}
+	.errorContainer {
+		width: 75%;
+		height: 40px;
+		margin: 0px auto;
+		text-align: center;
+	}
+		.missingLbl {
+			@include pullDown();
+			display: block;
+			color: $green;
+			font-style: italic;
+			font-weight: bold;
+		}
+	.submitQuiz {
+	}
+// RESULTS
+	.drList {
+		display: flex;
+		align-items: flex-start;
+	}
+	.drBlurb {
+		padding: 20px;
+		margin-bottom: 40px;
+		border-radius: 24px;
+		border: 2px solid $yellow;
+		background-color: #fff;
+	}
+	.drInfoContainer {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-start;
+	}
+		.avatar {
+			margin-right: 10px;
+			border-radius: 50%;
+			background-repeat: no-repeat;
+			background-position: center center;
+			background-size: cover;
+		}
+	.drInfoList {
+		width: 250px;
+	}
+	.drName {
+		color: $green;
+		font-size: 18px;
+		font-weight: bold;
+	}
+	.drAddress {
+		padding-left: 18px;
+		background: transparent url('../../src/images/location.png') left top no-repeat;
+		font-size: 12px;
+		font-style: italic;
+	}
+	.drBtnContainer {
+		display: flex;
+		flex-wrap: wrap;
+		width: 100%;
+	}
+	.btnLink {
+		@include pullDown();
+		width: 30px;
+		height: 30px;
+		border-radius: 50%;
+		border: 1px solid $green;
+		margin-bottom: 20px;
+		background-color: transparent;
+		text-align: center;
+		line-height: 26px;
+		font-size: 14px;
+		font-weight: bold;
+		color: $green;
 		transition: color 0.5s ease-in-out;
+		&:hover {
+			color: $brown;
+			transition: color 0.5s ease-in-out;
+		}
 	}
-}
-.contactFormContainer {
-	display: flex;
-	flex-direction: column;
-	input[type=submit] {
-		margin: 20px 0px;
+	.contactFormContainer {
+		display: flex;
+		flex-direction: column;
+		input[type=submit] {
+			margin: 20px 0px;
+		}
 	}
-}
-.msgArea {
-	padding: 10px;
-	border-radius: 16px;
-	border: 1px solid $yellow;
-	font-size: 16px;
-	resize: none;
-}
+	.msgArea {
+		padding: 10px;
+		border-radius: 16px;
+		border: 1px solid $yellow;
+		font-size: 16px;
+		resize: none;
+	}
 // SUCCESS
-.screen {
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 100;
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-	align-items: center;
-	width: 100vw;
-	height: 100vh;
-	background-color: rgba(0,0,0, 0.5);
-}
-.successMsg {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	width: 60%;
-	padding: 20px;
-	border-radius: 20px;
-	border: 2px solid $yellow;
-	background-color: #fff;
-	-webkit-box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.3);
-  -moz-box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.3);
-  box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.3);
-}
-.successTitle{
-	&:after {
-		background-image: url('../../src/images/msg-sent.png');
+	.screen {
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: 100;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+		align-self: stretch;
+		width: 100vw;
+		min-height: 100vh;
+		background-color: rgba(0,0,0, 0.5);
 	}
-}
+	.successMsg {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		border-radius: 20px;
+		border: 2px solid $yellow;
+		background-color: #fff;
+		-webkit-box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.3);
+	  -moz-box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.3);
+	  box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.3);
+	}
+	.successTitle{
+		&:after {
+			background-image: url('../../src/images/msg-sent.png');
+		}
+	}
+
+@import '_mobile.scss';
+@import '_desktop.scss';

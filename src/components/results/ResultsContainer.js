@@ -41,6 +41,7 @@ export default class Results extends React.Component {
 				<DrBlurb
 					key={key} 
 					dr={dr}
+					mobile={this.props.mobile}
 					selectedDr={this.state.selectedDr}
 					onClickCancel={this.handleCancelMsg}
 					onClickSelectDr={this.handleSelectDr}
@@ -70,6 +71,7 @@ export default class Results extends React.Component {
 Results.PropTypes = {
 	city: React.PropTypes.string.isRequired,
 	level: React.PropTypes.string.isRequired,
+	mobile: React.PropTypes.bool,
 	doctors: React.PropTypes.object.isRequired,
 	onSubmit: React.PropTypes.func.isRequired
 };

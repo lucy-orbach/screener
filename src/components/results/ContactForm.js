@@ -9,7 +9,9 @@ const ContactForm = (props) => {
 				maxLength="120"
 				placeholder="Would you like to add a message to the Dr?"
 				onChange={props.onChange} />
+			<div className="formBtnContainer">
 			<input type="submit" value="Submit" onClick={props.onSubmit} />
+			</div>
 		</form>
 	);
 };

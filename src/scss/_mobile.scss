@@ -1,0 +1,72 @@
+@media (max-width: 799px) {
+p {
+  line-height: 1.2rem;
+}
+h2 {
+  font-size: 1rem;
+}
+// APP
+	.app {
+		padding-top: 40px;
+	}
+	.main {
+		width: 85vw;
+	}
+	.appTitle {
+		font-size: 36px;
+		line-height: 40px;
+	}
+// INTRODUCTION
+	.introSection {
+		h2 {
+			text-align: center;
+		}
+	}
+// QUIZ
+	.quizSection {
+		p {
+			text-align: left;
+		}
+	}
+	.quizItem {
+		padding-bottom: 30px;
+		margin: 20px 0px 30px;
+		border-bottom: 1px dashed $yellow;
+	}
+		.q-text {
+			width: 86%;
+		}
+	.optionList {
+		flex-direction: column;
+	}
+		.radioLbl {
+			margin-bottom: 10px;
+		}
+// RESULTS
+	.drList {
+		flex-direction: column;
+	}
+	.avatar {
+		width: 70px;
+		height: 70px;
+	}
+	.drInfoList {
+		@media (max-width: 768px) and (orientation: portrait) {
+			width: 60%;
+		}
+	}
+	.drAddress {
+		width: 100%;
+		text-align: left;
+	}
+// SUCCESS
+	.successMsg {
+		width: 90vw;
+		padding: 20px;
+	  @media (min-width: 768px) {
+	  	width: 70vw;
+	  	padding: 50px 20px;
+	  }
+	}
+// media ends
+}

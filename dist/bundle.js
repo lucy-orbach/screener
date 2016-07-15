@@ -44251,8 +44251,8 @@ var App = function (_React$Component) {
 		_this.state = {
 			currentSection: 'start', //'start', 'quiz', results'
 			filteredDrs: [], // array of objects
-			level: null,
-			success: true, //string
+			level: 'mild',
+			success: false, //string
 			mobile: false
 		};
 		_this.componentDidMount = _this.componentDidMount.bind(_this);
@@ -44275,7 +44275,7 @@ var App = function (_React$Component) {
 		key: 'handleCurrentSection',
 		value: function handleCurrentSection(section) {
 			this.setState({ currentSection: section });
-			_reactDom2.default.findDOMNode(this.refs.pageTop).scrollTop = 0;
+			_reactDom2.default.findDOMNode(this.refs.pageTop).scrollTo = 0;
 		}
 	}, {
 		key: 'handleSubmitDr',
@@ -44283,8 +44283,10 @@ var App = function (_React$Component) {
 			// Dispatches to server
 			// this.props.actions.sendMsg( this.props.user, drId, 'Sent', msg);
 			//mocks receipt of success props
-			this.setState({ success: true });
-			_reactDom2.default.findDOMNode(this.refs.pageTop).scrollTop = 0;
+			_reactDom2.default.findDOMNode(this.refs.pageTop).scrollTo = 0;
+			this.setState({
+				currentSection: 'start',
+				success: true });
 		}
 	}, {
 		key: 'handleCloseModal',
@@ -44294,7 +44296,8 @@ var App = function (_React$Component) {
 	}, {
 		key: 'getMedia',
 		value: function getMedia() {
-			var mobile = window.matchMedia('(max-width: 767px)').matches;
+			// mobile & ipad portrait
+			var mobile = window.matchMedia('(max-width: 799px)').matches;
 			this.setState({ mobile: mobile });
 		}
 	}, {
@@ -44362,12 +44365,13 @@ var App = function (_React$Component) {
 						selections: selections,
 						onSubmitForm: this.setDepressionLevel }),
 					currentSection === 'results' && _react2.default.createElement(_ResultsContainer2.default, {
+						mobile: this.state.mobile,
 						city: user.city,
 						level: level,
 						doctors: filteredDrs,
-						onSubmit: this.handleSubmitDr }),
-					this.state.success && _react2.default.createElement(_Success2.default, { onClickClose: this.handleCloseModal })
-				)
+						onSubmit: this.handleSubmitDr })
+				),
+				this.state.success && _react2.default.createElement(_Success2.default, { onClickClose: this.handleCloseModal })
 			);
 		}
 	}]);
@@ -44398,7 +44402,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Introduction = function Introduction(props) {
 	return _react2.default.createElement(
 		"section",
-		{ className: "intro" },
+		{ className: "introSection" },
 		_react2.default.createElement(
 			"h2",
 			null,
@@ -44427,7 +44431,7 @@ var Introduction = function Introduction(props) {
 			_react2.default.createElement(
 				"li",
 				{ className: "step results" },
-				"Review Results and browse doctors"
+				"Review Results &doctors"
 			),
 			_react2.default.createElement(
 				"li",
@@ -44617,7 +44621,7 @@ var QuestContainer = function (_React$Component) {
 			});
 			return _react2.default.createElement(
 				'section',
-				null,
+				{ className: 'quizSection' },
 				_react2.default.createElement(
 					'h2',
 					null,
@@ -44700,7 +44704,11 @@ var QuestionField = function QuestionField(props) {
 				{ className: markAsError ? 'q-num has-error' : 'q-num' },
 				qKey + 1
 			),
-			question
+			_react2.default.createElement(
+				'span',
+				{ className: 'q-text' },
+				question
+			)
 		),
 		_react2.default.createElement(
 			'div',
@@ -44863,7 +44871,11 @@ var ContactForm = function ContactForm(props) {
 			maxLength: "120",
 			placeholder: "Would you like to add a message to the Dr?",
 			onChange: props.onChange }),
-		_react2.default.createElement("input", { type: "submit", value: "Submit", onClick: props.onSubmit })
+		_react2.default.createElement(
+			"div",
+			{ className: "formBtnContainer" },
+			_react2.default.createElement("input", { type: "submit", value: "Submit", onClick: props.onSubmit })
+		)
 	);
 };
 
@@ -44901,6 +44913,7 @@ var DrBlurb = function DrBlurb(props) {
 	var picUrl = _props$dr.picUrl;
 	var address = _props$dr.address;
 	var city = _props$dr.city;
+	var mobile = props.mobile;
 
 	var isActive = props.selectedDr === id;
 	return _react2.default.createElement(
@@ -44923,22 +44936,27 @@ var DrBlurb = function DrBlurb(props) {
 					{ key: 1, className: 'drSpeciality' },
 					speciality
 				),
-				_react2.default.createElement(
+				!mobile ? _react2.default.createElement(
 					'li',
 					{ key: 2, className: 'drAddress' },
 					address
-				)
+				) : null
 			)
 		),
+		mobile ? _react2.default.createElement(
+			'p',
+			{ className: 'drAddress' },
+			address,
+			'1234'
+		) : null,
 		_react2.default.createElement(
 			'div',
-			{ key: '1', className: 'drBtnContainer' },
-			_react2.default.createElement(
+			{ key: '1', className: 'drBtnContainer', style: isActive && mobile ? { justifyContent: 'flex-end' } : { justifyContent: 'center' } },
+			isActive ? _react2.default.createElement(
 				'button',
 				{ key: 0, className: 'btnLink', onClick: props.onClickCancel },
-				'Cancel'
-			),
-			_react2.default.createElement(
+				'X'
+			) : _react2.default.createElement(
 				'button',
 				{ key: 1, value: id, onClick: function onClick(e) {
 						return props.onClickSelectDr(e);
@@ -44971,6 +44989,7 @@ var DrBlurb = function DrBlurb(props) {
 
 DrBlurb.propTypes = {
 	dr: _react2.default.PropTypes.object.isRequired,
+	mobile: _react2.default.PropTypes.bool,
 	selectedDr: _react2.default.PropTypes.number,
 	onClickCancel: _react2.default.PropTypes.func.isRequired,
 	onClickSelectDr: _react2.default.PropTypes.func.isRequired,
@@ -45069,6 +45088,7 @@ var Results = function (_React$Component) {
 				return _react2.default.createElement(_DrBlurb2.default, {
 					key: key,
 					dr: dr,
+					mobile: _this2.props.mobile,
 					selectedDr: _this2.state.selectedDr,
 					onClickCancel: _this2.handleCancelMsg,
 					onClickSelectDr: _this2.handleSelectDr,
@@ -45115,6 +45135,7 @@ exports.default = Results;
 Results.PropTypes = {
 	city: _react2.default.PropTypes.string.isRequired,
 	level: _react2.default.PropTypes.string.isRequired,
+	mobile: _react2.default.PropTypes.bool,
 	doctors: _react2.default.PropTypes.object.isRequired,
 	onSubmit: _react2.default.PropTypes.func.isRequired
 };

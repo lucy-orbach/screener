@@ -4,20 +4,31 @@ import ContactForm from './ContactForm.js';
 
 const DrBlurb = (props) => {
 	let { id, name, speciality, picUrl, address, city } = props.dr;
+	let  { mobile } = props;
 	let isActive = props.selectedDr === id;
 	return (
 		<li className="drBlurb">
 			<div key="0" className="drInfoContainer">
-				<div className="avatar" style={{backgroundImage: `url(${picUrl})`}}/>
+				<div className="avatar" style={{backgroundImage: `url(${picUrl})`}} />
 				<ul className="drInfoList">
 					<li key={0} className="drName">{name}</li>
 					<li key={1} className="drSpeciality">{speciality}</li>
-					<li key={2} className="drAddress">{address}</li>
+					{ !mobile
+						?	<li key={2} className="drAddress">{address}</li>
+						: null
+					}
 				</ul>
 			</div>
-			<div key="1" className="drBtnContainer">
-				<button key={0} className="btnLink" onClick={props.onClickCancel}>Cancel</button>
-				<button key={1} value={id} onClick={(e) => props.onClickSelectDr(e)}>Contact Dr</button>
+			{ mobile
+				?	<p className="drAddress">{address}1234</p>
+					: null
+			}
+			<div key="1" className="drBtnContainer" style={ isActive && mobile ? {justifyContent: 'flex-end'} : {justifyContent: 'center'}}>
+				{ isActive
+					? <button key={0} className="btnLink" onClick={props.onClickCancel}>X</button>
+					: <button key={1} value={id} onClick={(e) => props.onClickSelectDr(e)}>Contact Dr</button>
+				}
+				
 			</div>
 			<Motion
 				style={{
@@ -37,6 +48,7 @@ const DrBlurb = (props) => {
 
 DrBlurb.propTypes = {
 	dr: React.PropTypes.object.isRequired,
+	mobile: React.PropTypes.bool,
 	selectedDr: React.PropTypes.number,
 	onClickCancel: React.PropTypes.func.isRequired,
 	onClickSelectDr: React.PropTypes.func.isRequired,
