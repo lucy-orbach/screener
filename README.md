@@ -1,5 +1,5 @@
 <h1>Depression Screen</h1>
-Responsive Web Application using React/Redux
+Responsive Web Application using React/ES6/Sass
 
 <h2>Get Started</h2>
 <p>Depression Screen is a Client-side application. You can choose to open it by downloading this repository and simply opening the index.html file on your browser. If you would like to inspect the react components, you can run it on a local server by following these steps:</p>
